@@ -95,8 +95,8 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_DSN'),
-            'database' => env('DB_DATABASE', 'crud_db'),
+            'dsn' => env('MONGODB_DSN'),
+            'database' => env('MONGODB_DATABASE', 'crud_db'),
         ],
 
     ],
