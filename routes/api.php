@@ -22,4 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::resource('items', ItemController::class);
 Route::resource('categories', CategoryController::class);
-Route::get('items/categories', [ItemController::class, 'listItemsWithCategoryDetails']);
+Route::get('items-categories', [ItemController::class, 'listItemsWithCategoryDetails']);

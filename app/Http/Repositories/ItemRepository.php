@@ -44,15 +44,17 @@ class ItemRepository
 
     public function listItemsWithCategory()
     {
-        return ItemModel::aggregate(
-            [
-                '$lookup' => [
-                    'from' => 'category',
-                    'localField' => 'category_id',
-                    'foreign_field' => '_id',
-                'as' => 'category'
+        return ItemModel::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$lookup' => [
+                        'from' => 'category',
+                        'localField' => 'category_id',
+                        'foreignField' => '_id',
+                        'as' => 'category'
+                    ]
                 ]
-            ]
-        );
+            ]);
+        });
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Validation\Rule;
 use App\Http\Repositories\ItemRepository;
 use Illuminate\Support\Facades\Validator;
+use MongoDB\BSON\ObjectId;
 
 
 class ItemService
@@ -14,13 +16,20 @@ class ItemService
 
     public function createItem(array $data)
     {
-        $this->validate($data, [
-            'name' => 'required|string',
+        $message = $this->validate($data, [
+            'name' => [Rule::unique('mongodb.item', 'name'), 'required'],
             'description' => 'required|string',
-            'price' => 'required|integer|float',
+            'price' => 'required|numeric',
             'quantity' => 'integer',
             'category_id' => 'required'
         ]);
+
+        if ($message) {
+            return [
+                'error' => $message,
+            ];
+        }
+        $data['category_id'] = new ObjectId($data['category_id']);
         return $this->itemRepository->createItem($data);
     }
 
@@ -41,12 +50,19 @@ class ItemService
 
     public function updateItem(string $itemId, array $data)
     {
-        $this->validate($data, [
-            'name' => 'string',
+        $message = $this->validate($data, [
+            'name' => [Rule::unique('mongodb.item', 'name'), 'required'],
             'description' => 'string',
-            'price' => 'integer|float',
+            'price' => 'numeric',
             'quantity' => 'integer',
         ]);
+
+        if ($message) {
+            return [
+                'error' => $message,
+            ];
+        }
+
         return $this->itemRepository->updateItem($itemId, $data);
     }
 
@@ -58,9 +74,12 @@ class ItemService
     //validate request data
     private function validate(array $data, array $rules, array $messages = [])
     {
+        Validator::getPresenceVerifier();
         $validator = Validator::make($data, $rules, $messages);
-
-        return $validator;
+        
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
     }
 
 }

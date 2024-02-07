@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class CategoryModel extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mongodb';
     
     protected $collection = 'category';
 

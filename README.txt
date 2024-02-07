@@ -1,8 +1,5 @@
  Run:
  composer install
- composer require mongodb/laravel-mongodb
+ composer require mongodb/mongodb
+composer require jenssegers/mongodb --ignore-platform-reqs
  
-
- ADD TO ENV:
- MONGODB_DATABASE
- MONGODB_DSN
