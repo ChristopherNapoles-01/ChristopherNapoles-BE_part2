@@ -2,8 +2,10 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repositories\CategoryRepository;
+use App\Models\CategoryModel;
 
 class CategoryService
 {
@@ -14,10 +16,18 @@ class CategoryService
     
     public function createCategory(array $data)
     {
-        $this->validate($data, [
-            'name' => 'required|string',
+        $message = $this->validate($data, [
+            'name' => [Rule::unique('mongodb.category', 'name'), 'required', 'string'],
             'description' => 'string'
         ]);
+
+        if ($message) {
+            return [
+                'error' => $message,
+            ];
+        }
+
+       
         return $this->categoryRepository->createCategory($data);
     }
 
@@ -38,19 +48,29 @@ class CategoryService
 
     public function updateCategory(string $categoryId, array $data)
     {
-        $this->validate($data, [
-            'name' => 'string',
+        $message = $this->validate($data, [
+            'name' => [Rule::unique('mongodb.category', 'name'), 'string'],
             'description' => 'string'
         ]);
+
+        if ($message) {
+            return [
+                'error' => $message,
+            ];
+        }
+        
         return $this->categoryRepository->updateCategory($categoryId, $data);
     }
 
     //validate request data
     private function validate(array $data, array $rules, array $messages = [])
     {
+        Validator::getPresenceVerifier();
         $validator = Validator::make($data, $rules, $messages);
-
-        return $validator;
+        
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
     }
 
 }

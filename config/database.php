@@ -94,8 +94,9 @@ return [
         ],
 
         'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('MONGODB_DSN'),
+            'driver'   => 'mongodb',
+            'host'     => env('MONGODB_HOST', 'localhost'),
+            'port'     => env('MONGODB_PORT', 27017),
             'database' => env('MONGODB_DATABASE', 'crud_db'),
         ],
 
